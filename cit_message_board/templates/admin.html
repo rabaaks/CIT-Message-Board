@@ -5,8 +5,8 @@
 {% block section %}
 {% for post in posts %}
 <div>
-    {{ post['title'] }}
-    {{ post['author'] }}
+    Title: {{ post['title'] }}
+    Author: {{ post['author'] }}
     <form action="{{ url_for('views.delete', id=post['id']) }}" method="post">
         <input type="submit" value="Delete">
     </form>
@@ -16,7 +16,7 @@
     </form>
     {% endif %}
     <br>
-    <img style="width: auto; height: 25vh;" src="/images/{{ post['id'] }}">
+    <img style="width: auto; height: 25vh;" src="{{ url_for('views.images', id=post['id']) }}">
 </div>
 {% endfor %}
 {% endblock %}

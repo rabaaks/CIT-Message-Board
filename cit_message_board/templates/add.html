@@ -1,13 +1,18 @@
 {% extends 'page.html' %}
 
+{% block header %}{% block title %}Add a message{% endblock %}{% endblock %}
+
 {% block section %}
 <form enctype="multipart/form-data" method="post">
     <label for="name">Name</label>
     <input name="name" id="name" required>
+    <br>
     <label for="title">Title</label>
     <input name="title" id="title" required>
+    <br>
     <label for="image">Image</label>
     <input type="file" name="image" id="image" required>
+    <br>
     <input type="submit" value="Submit">
 </form>
 {% endblock %}
