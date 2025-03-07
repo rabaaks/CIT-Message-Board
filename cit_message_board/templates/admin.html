@@ -1,0 +1,22 @@
+{% extends 'page.html' %}
+
+{% block header %}{% block title %}Admin Dashboard{% endblock %}{% endblock %}
+
+{% block section %}
+{% for post in posts %}
+<div>
+    {{ post['title'] }}
+    {{ post['author'] }}
+    <form action="{{ url_for('views.delete', id=post['id']) }}" method="post">
+        <input type="submit" value="Delete">
+    </form>
+    {% if post['admin_id'] == None %}
+    <form action="{{ url_for('views.approve', id=post['id']) }}" method="post">
+        <input type="submit" value="Approve">
+    </form>
+    {% endif %}
+    <br>
+    <img style="width: auto; height: 25vh;" src="/images/{{ post['id'] }}">
+</div>
+{% endfor %}
+{% endblock %}

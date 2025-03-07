@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<nav>
+    <h1>CIT Message Board</h1>
+    <ul>
+    {% if g.user %}
+        <li><span>Logged in as {{ g.user['username'] }}</span></li>
+        <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+        <li><a href="{{ url_for('views.admin') }}">Admin</a></li>
+    {% else %}
+        <li><a href="{{ url_for('auth.login') }}">Admin Login</a></li>
+    {% endif %}
+        <li><a href="{{ url_for('views.live') }}">Live View</a></li>
+        <li><a href="{{ url_for('views.add') }}">Add</a></li>
+    </ul>
+</nav>
+<header><h1>{% block header %}{% endblock %}</h1></header>
+{% for message in get_flashed_messages() %}
+    <div>{{ message }}</div>
+{% endfor %}
+{% block section %}{% endblock %}
+{% endblock %}

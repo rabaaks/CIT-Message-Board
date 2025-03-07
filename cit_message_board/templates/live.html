@@ -1,0 +1,36 @@
+<body style="margin: 0;">
+    <img style="width: auto; height: 100vh; display: block; margin-left: auto; margin-right: auto;" id="image">
+</body>
+
+<script>
+    let posts = [];
+    let index = 0;
+
+    const getJSON = async (url) => {
+        const response = await fetch(url);
+        if(!response.ok) // check if response worked (no 404 errors etc...)
+        throw new Error(response.statusText);
+
+        const data = response.json(); // get JSON from the response
+        return data; // returns a promise, which resolves to this data value
+    }
+
+    const next = async () => {
+        console.log("Fetching data...");
+        await getJSON("{{ url_for('views.posts') }}").then(data => {
+            console.log(data);
+            posts = data
+        }).catch(error => {
+            console.error(error);
+        });
+
+        index++;
+        if (index > posts.length - 1) {
+            index = 0;
+        }
+        document.getElementById("image").setAttribute("src", "/images/" + posts[index]);
+    }
+
+    next();
+    setInterval(next, 10000);
+</script>
