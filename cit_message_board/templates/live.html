@@ -1,8 +1,6 @@
-<!-- <body style="margin: 0;"> -->
-    <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-        <img style="width: 100vw; height: auto; display: block; margin: auto;" id="image">
-    </div>
-<!-- </body> -->
+<body style="margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: black; overflow: hidden;">
+    <img style="width: 100vw; height: 100vh; object-fit: contain;" id="image">
+</body>
 
 <script>
     let posts = [];
@@ -34,5 +32,5 @@
     }
 
     next();
-    setInterval(next, 500);
+    setInterval(next, 5000);
 </script>
