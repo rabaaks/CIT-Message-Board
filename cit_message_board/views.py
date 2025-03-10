@@ -17,7 +17,7 @@ def index():
 def admin():
     db = get_db()
     posts = db.execute(
-        'SELECT * FROM post'
+        'SELECT title, author, id FROM post'
     ).fetchall()
     return render_template('admin.html', posts=posts)
 
