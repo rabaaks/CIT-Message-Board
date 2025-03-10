@@ -14,6 +14,8 @@ def login():
         username = request.form['username']
         password = request.form['password']
         db = get_db()
+
+        # If there was an error, add it to this variable
         error = None
         user = db.execute(
             'SELECT * FROM admin WHERE username = ?', (username,)
@@ -25,6 +27,7 @@ def login():
             error = 'Incorrect password.'
 
         if error is None:
+            # Add the login to cookies
             session.clear()
             session['user_id'] = user['id']
             return redirect(url_for('views.admin'))
@@ -36,6 +39,7 @@ def login():
 def add_admin(username, password):
     db = get_db()
 
+    # If someone with that username already exists then return false
     try:
         db.execute(
             "INSERT INTO admin (username, password) VALUES (?, ?)",
@@ -48,6 +52,7 @@ def add_admin(username, password):
 
 @bp.route('/logout')
 def logout():
+    # Clear the cookies
     session.clear()
     return redirect(url_for('views.index'))
 
@@ -64,6 +69,7 @@ def load_logged_in_user():
         ).fetchone()
 
 def login_required(view):
+    # If the user isn't logged in then send an error code
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:

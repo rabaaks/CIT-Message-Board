@@ -17,7 +17,7 @@ def index():
 def admin():
     db = get_db()
     posts = db.execute(
-        'SELECT title, author, id FROM post'
+        'SELECT title, author, admin_id, id FROM post'
     ).fetchall()
     return render_template('admin.html', posts=posts)
 
@@ -44,7 +44,9 @@ def live():
 
 @bp.route('/posts')
 def posts():
+    # Used by the front end to get a list of posts to cycle through
     db = get_db()
+    # If the admin id is null it hasn't been approved
     posts = db.execute(
         'SELECT id FROM post WHERE NOT admin_id IS NULL'
     ).fetchall()
@@ -52,6 +54,7 @@ def posts():
 
 @bp.route('/images/<int:id>')
 def images(id):
+    # Used to get an image in a displayable format
     db = get_db()
     file = db.execute(
         'SELECT data FROM post WHERE id = ?',

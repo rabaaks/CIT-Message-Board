@@ -5,6 +5,7 @@ import click
 from flask import current_app, g
 
 def get_db():
+    # If the database doesn't already exist then create it
     if 'db' not in g:
         g.db = sqlite3.connect(
             current_app.config['DATABASE'],
@@ -16,6 +17,7 @@ def get_db():
 
 
 def close_db(e=None):
+    # Remove the database from the global context
     db = g.pop('db', None)
 
     if db is not None:
