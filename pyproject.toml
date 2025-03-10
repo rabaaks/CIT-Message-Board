@@ -1,6 +1,6 @@
 [project]
 name = "cit_message_board"
-version = "0.1.0"
+version = "0.1.1"
 description = "A place where members of the CIT can share messages, events, and personal projects"
 dependencies = [
     "flask"
