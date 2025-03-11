@@ -1,7 +1,9 @@
 import json
+from datetime import datetime
 from io import BytesIO
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for, send_file, jsonify
 from werkzeug.exceptions import abort
+import pytz
 
 from .auth import login_required
 from .db import get_db
@@ -17,7 +19,7 @@ def index():
 def admin():
     db = get_db()
     posts = db.execute(
-        'SELECT title, author, admin_id, id FROM post'
+        'SELECT created, begins, expires, title, author, admin_id, id FROM post'
     ).fetchall()
     return render_template('admin.html', posts=posts)
 
@@ -26,13 +28,21 @@ def add():
     if request.method == 'POST':
         name = request.form['name']
         title = request.form['title']
-        image = request.files['image']
-        data = image.read()
+
+        created = datetime.now().strftime('%Y-%m-%dT%H:%M')
+
+        deeprun_time = pytz.timezone('US/Eastern')
+        utc = pytz.timezone('UTC')
+
+        begins = deeprun_time.localize(datetime.strptime(request.form['begins'], '%Y-%m-%dT%H:%M')).astimezone(utc).strftime('%Y-%m-%dT%H:%M')
+        expires = deeprun_time.localize(datetime.strptime(request.form['expires'], '%Y-%m-%dT%H:%M')).astimezone(utc).strftime('%Y-%m-%dT%H:%M')
+
+        image = request.files['image'].read()
 
         db = get_db()
         db.execute(
-            'INSERT INTO post (title, author, data) VALUES (?, ?, ?)',
-            (title, name, data)
+            'INSERT INTO post (created, begins, expires, title, author, data) VALUES (?, ?, ?, ?, ?, ?)',
+            (created, begins, expires, title, name, image)
         )
         db.commit()
 
@@ -48,9 +58,29 @@ def posts():
     db = get_db()
     # If the admin id is null it hasn't been approved
     posts = db.execute(
-        'SELECT id FROM post WHERE NOT admin_id IS NULL'
+        'SELECT id, begins, expires FROM post WHERE NOT admin_id IS NULL'
     ).fetchall()
-    return jsonify([row['id'] for row in posts])
+    filtered_posts = []
+    for post in posts:
+        id = post['id']
+        current_time = datetime.now()
+        begin_time = datetime.strptime(post['begins'], '%Y-%m-%dT%H:%M')
+        expire_time = datetime.strptime(post['expires'], '%Y-%m-%dT%H:%M')
+        print(begin_time)
+        print(expire_time)
+        if begin_time > current_time:
+            continue
+        elif expire_time < current_time:
+            db.execute(
+                'DELETE FROM post WHERE id = ?',
+                (id,)
+            )
+            db.commit()
+            continue
+
+        filtered_posts.append(id)
+
+    return jsonify(filtered_posts)
 
 @bp.route('/images/<int:id>')
 def images(id):

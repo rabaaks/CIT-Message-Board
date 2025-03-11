@@ -10,7 +10,9 @@ CREATE TABLE admin (
 CREATE TABLE post (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     admin_id INTEGER,
-    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created TEXT NOT NULL,
+    begins TEXT NOT NULL,
+    expires TEXT NOT NULL,
     title TEXT NOT NULL,
     author TEXT NOT NULL,
     data BLOB NOT NULL
