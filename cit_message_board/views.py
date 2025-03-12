@@ -31,6 +31,7 @@ def add():
 
         created = datetime.now().strftime('%Y-%m-%dT%H:%M')
 
+        # Convert the time given by the user into UTC time
         deeprun_time = pytz.timezone('US/Eastern')
         utc = pytz.timezone('UTC')
 
